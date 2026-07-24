@@ -1,0 +1,164 @@
+# 4-Digit BCD Counter using Verilog HDL
+
+## Overview
+
+This project implements a **4-Digit Binary Coded Decimal (BCD) Counter** using Verilog HDL. The counter is driven by a **24 MHz system clock** and increments once every second by first generating a 1-second timing pulse. The count is displayed using four BCD digits: **ones, tens, hundreds, and thousands**.
+
+A testbench is included to verify the operation of the counter through simulation.
+
+---
+
+# Objective
+
+* Design a 4-digit BCD counter.
+* Generate a 1-second timing pulse from a 24 MHz clock.
+* Count from **0000 to 9999**.
+* Reset the counter using an active-high reset.
+* Verify the design using a Verilog testbench.
+
+---
+
+# Module Description
+
+## `counter_4bit`
+
+The module divides the 24 MHz clock to generate a **1-second enable pulse** and increments a four-digit BCD counter.
+
+### Inputs
+
+* `clk_24mhz` – 24 MHz system clock
+* `reset` – Active-high reset
+
+### Outputs
+
+* `ones[3:0]` – Ones digit
+* `tens[3:0]` – Tens digit
+* `hundreds[3:0]` – Hundreds digit
+* `thousands[3:0]` – Thousands digit
+
+---
+
+# Working Principle
+
+The design consists of two sections:
+
+### 1. Clock Divider
+
+A 25-bit counter (`sec_counter`) counts the incoming clock cycles.
+
+```text
+24 MHz Clock → Clock Divider → 1-Second Pulse
+```
+
+When the counter reaches:
+
+```text
+24,000,000 − 1
+```
+
+it resets to zero and generates a one-second timing event.
+
+---
+
+### 2. BCD Counter
+
+After every one-second pulse:
+
+* The **ones** digit increments.
+* If the ones digit reaches **9**, it resets to **0** and increments the **tens** digit.
+* The same carry logic is applied to the **hundreds** and **thousands** digits.
+* After **9999**, the counter rolls over to **0000**.
+
+---
+
+# Counting Sequence
+
+```text
+0000
+0001
+0002
+...
+0009
+0010
+0011
+...
+0099
+0100
+...
+9999
+0000
+```
+
+---
+
+# Reset Operation
+
+When `reset = 1`:
+
+* `sec_counter` is cleared.
+* `ones` is reset to `0`.
+* `tens` is reset to `0`.
+* `hundreds` is reset to `0`.
+* `thousands` is reset to `0`.
+
+The counter restarts from **0000** after reset is released.
+
+---
+
+# Testbench Description
+
+## `tb_counter_4bit`
+
+The testbench verifies the counter by generating a 24 MHz clock and applying a reset signal.
+
+### Clock Generation
+
+* Clock Frequency = **24 MHz**
+* Clock Period ≈ **41.67 ns**
+
+### Test Sequence
+
+1. Apply active-high reset.
+2. Release reset after **100 ns**.
+3. Allow the simulation to run.
+4. Monitor the BCD counter outputs.
+5. End the simulation using `$finish`.
+
+---
+
+# Features
+
+* 4-digit BCD counter
+* Counts from **0000 to 9999**
+* One-second timing generation
+* Active-high reset
+* Automatic carry propagation between digits
+* Fully synthesizable Verilog HDL
+* Compatible with Vivado, ModelSim, and other Verilog simulators
+
+---
+
+# Applications
+
+* Digital clocks
+* Event counters
+* Timers
+* Stopwatches
+* Frequency counters
+* FPGA-based display systems
+* Embedded system timing applications
+
+---
+
+# Simulation Result
+
+The simulation verifies that:
+
+* The 24 MHz clock is correctly divided to generate a one-second timing pulse.
+* The BCD counter increments correctly every second.
+* Carry propagation between the ones, tens, hundreds, and thousands digits functions correctly.
+* The counter resets to **0000** when the reset signal is asserted.
+* After reaching **9999**, the counter rolls over to **0000**.
+
+---
+
