@@ -1,0 +1,217 @@
+# Single-Port RAM with VIO and ILA using Verilog HDL
+
+## Overview
+
+This project implements a **32-bit Single-Port RAM** and demonstrates its verification on an FPGA using **Virtual Input/Output (VIO)** and **Integrated Logic Analyzer (ILA)** IP cores in Xilinx Vivado.
+
+The RAM allows data to be written to and read from memory through a single port. The **VIO** core provides virtual control of the RAM inputs from Vivado Hardware Manager, while the **ILA** core captures and displays internal signals in real time.
+
+---
+
+# Objective
+
+* Design a 32-bit Single-Port RAM.
+* Perform synchronous read and write operations.
+* Verify RAM functionality using a simulation testbench.
+* Interface the RAM with **VIO** and **ILA** for hardware debugging.
+* Demonstrate memory operations directly on an FPGA.
+
+---
+
+# Project Structure
+
+```text
+Top Module
+│
+├── Single-Port RAM
+├── VIO (Virtual Input/Output)
+└── ILA (Integrated Logic Analyzer)
+```
+
+---
+
+# Modules
+
+## 1. Single-Port RAM (`single_port_ram`)
+
+The RAM stores **32-bit data** in **64 memory locations**.
+
+### Inputs
+
+* `clk` – System clock
+* `addr[31:0]` – Memory address
+* `wr_en` – Write enable
+* `write_data[31:0]` – Data to be written
+
+### Output
+
+* `read_data[31:0]` – Data read from memory
+
+### Memory Organization
+
+```text
+Memory Size = 64 Locations
+Data Width  = 32 Bits
+Address Range = 0–63
+```
+
+---
+
+# RAM Operation
+
+### Write Operation
+
+When `wr_en = 1`:
+
+```text
+mem[addr] ← write_data
+```
+
+The input data is stored at the selected memory address on the rising edge of the clock.
+
+---
+
+### Read Operation
+
+When `wr_en = 0`:
+
+```text
+read_data ← mem[addr]
+```
+
+The data stored at the selected address is available on the output after the clock edge.
+
+---
+
+# 2. Top Module (`top`)
+
+The top module connects the Single-Port RAM with the Xilinx debugging IPs.
+
+### Internal Signals
+
+* `wr_en`
+* `addr`
+* `write_data`
+* `read_data`
+
+These signals are shared between the RAM, VIO, and ILA modules.
+
+---
+
+# Virtual Input/Output (VIO)
+
+The **VIO IP** allows users to control FPGA signals directly from **Vivado Hardware Manager** without using external switches or buttons.
+
+### Inputs to VIO
+
+* `read_data`
+
+### Outputs from VIO
+
+* `wr_en`
+* `addr`
+* `write_data`
+
+Using VIO, users can:
+
+* Select memory addresses
+* Enter write data
+* Enable or disable write operations
+* Observe read data
+
+---
+
+# Integrated Logic Analyzer (ILA)
+
+The **ILA IP** captures internal FPGA signals in real time for debugging.
+
+### Signals Monitored
+
+* `wr_en`
+* `addr`
+* `write_data`
+* `read_data`
+
+The captured waveforms can be viewed in **Vivado Hardware Manager**, making it easy to verify RAM behavior without external measurement equipment.
+
+---
+
+# Testbench Description
+
+## `single_port_ram_tb`
+
+The testbench verifies RAM functionality in simulation.
+
+### Write Phase
+
+* Enable `wr_en`.
+* Write data values to memory addresses **0 through 12**.
+
+### Read Phase
+
+* Disable `wr_en`.
+* Read back the stored data from the same addresses.
+* Verify that the read values match the written values.
+
+---
+
+# FPGA Verification Flow
+
+1. Generate the bitstream in Vivado.
+2. Program the FPGA.
+3. Open **Hardware Manager**.
+4. Use **VIO** to:
+
+   * Set the memory address.
+   * Enter write data.
+   * Control the write enable signal.
+5. Observe the memory output using **VIO**.
+6. Capture internal RAM signals using **ILA** to verify correct operation.
+
+---
+
+# Features
+
+* 32-bit Single-Port RAM
+* 64 memory locations
+* Synchronous read and write operations
+* FPGA implementation using Verilog HDL
+* VIO-based user control
+* ILA-based real-time debugging
+* Fully synthesizable design
+* Compatible with Xilinx Vivado
+
+---
+
+# Applications
+
+* Embedded memory systems
+* FPGA-based data storage
+* Processor memory interfaces
+* Digital signal processing
+* Hardware debugging and verification
+* FPGA education and laboratory experiments
+
+---
+
+# Simulation Result
+
+The simulation confirms that:
+
+* Data is correctly written into memory when the write enable signal is HIGH.
+* Data is correctly read from memory when the write enable signal is LOW.
+* Memory contents remain unchanged until overwritten.
+* The RAM functions correctly for all tested addresses.
+
+---
+
+# Hardware Verification
+
+The FPGA implementation verifies that:
+
+* **VIO** successfully controls the RAM inputs (`wr_en`, `addr`, and `write_data`).
+* **ILA** captures and displays internal RAM signals in real time.
+* Read and write operations can be monitored directly in Vivado Hardware Manager.
+* The hardware results match the simulation results.
+
+---
