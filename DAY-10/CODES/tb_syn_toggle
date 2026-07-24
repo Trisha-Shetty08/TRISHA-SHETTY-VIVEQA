@@ -1,0 +1,84 @@
+module tb_syn_toggle();
+
+reg clk_A;
+reg rst_A;
+reg pulse_in_A;
+
+reg clk_B;
+reg rst_B;
+
+
+wire pulse_out_B;
+
+syn_toggle uut (
+    .clk_A(clk_A),
+    .rst_A(rst_A),
+    .pulse_in_A(pulse_in_A),
+    .clk_B(clk_B),
+    .rst_B(rst_B),
+    .pulse_out_B(pulse_out_B)
+);
+
+initial
+begin
+    clk_A = 0;
+    forever #5 clk_A = ~clk_A;
+end
+
+
+initial
+begin
+    clk_B = 0;
+    forever #20 clk_B = ~clk_B;
+end
+initial
+begin
+
+  
+    rst_A = 1;
+    rst_B = 1;
+    pulse_in_A = 0;
+
+    #100;
+
+    @(negedge clk_A)
+    rst_A = 0;
+
+    @(negedge clk_B)
+    rst_B = 0;
+
+    #50;
+
+   
+    @(posedge clk_A);
+    pulse_in_A = 1;
+
+    @(posedge clk_A);
+    pulse_in_A = 0;
+
+    #300;
+
+  
+    @(posedge clk_A);
+    pulse_in_A = 1;
+
+    @(posedge clk_A);
+    pulse_in_A = 0;
+
+    #300;
+
+    @(posedge clk_A);
+    pulse_in_A = 1;
+
+    @(posedge clk_A);
+    pulse_in_A = 0;
+
+    #300;
+
+    $display("Simulation Finished Successfully.");
+    $finish;
+
+end
+
+endmodule
+
