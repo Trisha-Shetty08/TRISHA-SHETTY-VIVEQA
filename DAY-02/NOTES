@@ -1,0 +1,135 @@
+# D Flip-Flop (D FF) using Verilog HDL
+
+## Overview
+
+This project implements a **positive edge-triggered D Flip-Flop with an asynchronous active-high reset** using Verilog HDL. A testbench is included to verify its functionality through simulation.
+
+## Objective
+
+* Design a positive edge-triggered D Flip-Flop.
+* Implement an asynchronous reset.
+* Verify the circuit using a Verilog testbench.
+* Observe the output waveform for different input conditions.
+
+---
+
+## Module Description
+
+### `d_ff`
+
+The `d_ff` module stores the value of input **D** on the rising edge of the clock (`clk`). When the reset (`rst`) is HIGH, the output is immediately cleared to `0`, regardless of the clock.
+
+### Inputs
+
+* `clk` – Clock signal
+* `rst` – Asynchronous active-high reset
+* `d` – Data input
+
+### Output
+
+* `q` – Stored output
+
+### Working
+
+* On every **positive edge of the clock**, the value of `d` is transferred to `q`.
+* If `rst = 1`, the output `q` is immediately reset to `0`.
+* The output retains its value until the next rising edge of the clock.
+
+---
+
+## Reset Logic
+
+```verilog
+if (rst)
+    q <= 1'b0;
+else
+    q <= d;
+```
+
+* `rst = 1` → Output is cleared immediately.
+* `rst = 0` → Output follows the value of `d` on the next positive clock edge.
+
+---
+
+## Testbench Description
+
+### `tb_d_ff`
+
+The testbench verifies the D Flip-Flop by generating a clock signal, applying different values to the data input, and testing the reset operation.
+
+### Clock Generation
+
+* Clock period = **10 ns**
+* Rising edge every **5 ns**
+
+```verilog
+forever #5 clk = ~clk;
+```
+
+---
+
+## Test Cases
+
+| Time (ns) | Reset | D | Expected Q       |
+| --------- | ----- | - | ---------------- |
+| 0         | 1     | 0 | 0 (Reset active) |
+| 10        | 0     | 1 | 1                |
+| 20        | 0     | 0 | 0                |
+| 30        | 0     | 1 | 1                |
+| 40        | 1     | X | 0 (Reset active) |
+| 50        | 0     | 0 | 0                |
+
+---
+
+## Simulation Monitoring
+
+The `$monitor` statement continuously displays the signal values during simulation.
+
+```verilog
+$monitor("Time=%0t clk=%b rst=%b d=%b q=%b",
+         $time, clk, rst, d, q);
+```
+
+This helps verify that the output changes only on the positive clock edge and resets immediately when `rst` becomes HIGH.
+
+---
+
+## Expected Behavior
+
+| Reset | Clock Edge     | D | Q                    |
+| ----- | -------------- | - | -------------------- |
+| 1     | X              | X | 0                    |
+| 0     | Rising Edge    | 0 | 0                    |
+| 0     | Rising Edge    | 1 | 1                    |
+| 0     | No Rising Edge | X | Holds previous value |
+
+---
+
+## Features
+
+* Positive edge-triggered operation
+* Asynchronous active-high reset
+* Non-blocking assignments (`<=`)
+* Simple and synthesizable Verilog design
+* Easy to simulate in Vivado, ModelSim, or other Verilog simulators
+
+---
+
+## Applications
+
+* Registers
+* Shift registers
+* Counters
+* Data synchronization
+* Memory elements
+* FPGA and ASIC digital designs
+
+---
+
+## Simulation Result
+
+The simulation verifies that:
+
+* The output updates only on the **rising edge** of the clock.
+* The **asynchronous reset** immediately forces the output to `0`.
+* The D Flip-Flop correctly stores and holds the input data until the next clock edge.
