@@ -1,0 +1,91 @@
+`timescale 1ns / 1ps
+
+
+module fifo_tb;
+reg clk;
+reg rst;
+reg wr_en;
+reg rd_en;
+reg [7:0] write_data;
+
+wire [7:0] read_data;
+wire full;
+wire empty;
+
+// Instantiate FIFO
+fifo uut (
+    .clk(clk),
+    .rst(rst),
+    .wr_en(wr_en),
+    .rd_en(rd_en),
+    .write_data(write_data),
+    .read_data(read_data),
+    .full(full),
+    .empty(empty)
+);
+
+// Clock Generation (10 ns period)
+always #5 clk = ~clk;
+
+integer i;
+
+initial begin
+    // Initialize signals
+    clk = 0;
+    rst = 1;
+    wr_en = 0;
+    rd_en = 0;
+    write_data = 8'd0;
+
+    // Apply Reset
+    #20;
+    rst = 0;
+    $display("Writing Data into FIFO");
+
+    for(i = 0; i < 16; i = i + 1)
+    begin
+        @(posedge clk);
+        wr_en = 1;
+        write_data = i + 8'd1;
+    end
+
+    @(posedge clk);
+    wr_en = 0;
+
+    // Check Full
+    if(full)
+        $display("FIFO is FULL");
+    else
+        $display("FIFO is NOT FULL");
+
+    $display("Reading Data from FIFO");
+
+    for(i = 0; i < 16; i = i + 1)
+    begin
+        @(posedge clk);
+        rd_en = 1;
+        @(negedge clk);
+        $display("Time=%0t Read Data = %d", $time, read_data);
+    end
+
+    @(posedge clk);
+    rd_en = 0;
+
+    // Check Empty
+    if(empty)
+        $display("FIFO is EMPTY");
+    else
+        $display("FIFO is NOT EMPTY");
+
+    #20;
+    $finish;
+end
+
+// Monitor Signals
+initial begin
+    $monitor("Time=%0t rst=%b wr_en=%b rd_en=%b write_data=%d read_data=%d full=%b empty=%b wr_ptr=%d rd_ptr=%d",
+              $time, rst, wr_en, rd_en, write_data, read_data,
+              full, empty, uut.wr_ptr, uut.rd_ptr);
+end
+
+endmodule
