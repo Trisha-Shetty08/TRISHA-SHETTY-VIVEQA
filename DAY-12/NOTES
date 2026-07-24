@@ -1,0 +1,135 @@
+# Mealy FSM Sequence Detector using Verilog HDL
+
+## Overview
+
+This project implements a **Mealy Finite State Machine (FSM)** using Verilog HDL. The FSM monitors a serial input stream and generates an output based on the current state and input. The design demonstrates the implementation of a Mealy machine using state transitions and output logic.
+
+---
+
+# Objective
+
+* Design a Mealy Finite State Machine (FSM).
+* Implement sequence detection using state transitions.
+* Generate the output based on both the current state and the input.
+* Verify the FSM using a Verilog testbench.
+
+---
+
+# Module Description
+
+## `mealy_110`
+
+The `mealy_110` module consists of:
+
+* A **state register**
+* **Next-state combinational logic**
+* **Output logic**
+
+### Inputs
+
+* `clk` – Clock signal
+* `rst` – Active-high asynchronous reset
+* `x` – Serial input
+
+### Output
+
+* `y` – Sequence detection output
+
+---
+
+# State Encoding
+
+The FSM uses four encoded states.
+
+| State | Binary Code | Description            |
+| ----- | ----------- | ---------------------- |
+| S0    | 00          | Initial/Idle state     |
+| S1    | 01          | First pattern detected |
+| S2    | 10          | Intermediate state     |
+| S3    | 11          | Unused/Reserved state  |
+
+---
+
+# Working Principle
+
+The FSM updates its present state on the **positive edge of the clock**.
+
+* When `rst` is HIGH, the FSM returns to **S0**.
+* Otherwise, the FSM transitions according to the current state and input `x`.
+* The output `y` is generated immediately from the current state and input, which is the defining characteristic of a **Mealy FSM**.
+
+---
+
+# State Transition Summary
+
+| Present State | Input (`x`) | Next State | Output (`y`) |
+| ------------- | ----------- | ---------- | ------------ |
+| S0            | 0           | S0         | 0            |
+| S0            | 1           | S1         | 0            |
+| S1            | 0           | S1         | 0            |
+| S1            | 1           | S2         | 0            |
+| S2            | 0           | S1         | 0            |
+| S2            | 1           | S0         | 1            |
+
+The reserved state **S3** is included for completeness but is not used during normal operation.
+
+---
+
+# Testbench Description
+
+## `mealy_110_tb`
+
+The testbench verifies the FSM by generating a clock, applying reset, and providing a sequence of input bits.
+
+### Clock Generation
+
+* Clock period = **10 ns**
+* Rising edge every **5 ns**
+
+---
+
+## Test Sequence
+
+1. Initialize the clock, reset, and input.
+2. Apply reset to place the FSM in the initial state.
+3. Release reset.
+4. Apply different input values to test state transitions.
+5. Observe the output `y`.
+6. End the simulation using `$finish`.
+
+---
+
+# Features
+
+* Mealy Finite State Machine implementation
+* Positive edge-triggered state transitions
+* Active-high asynchronous reset
+* Separate state register and combinational logic
+* Fully synthesizable Verilog HDL
+* Compatible with Vivado, ModelSim, and other Verilog simulators
+
+---
+
+# Applications
+
+* Sequence detection
+* Digital communication systems
+* Serial data processing
+* Pattern recognition
+* Control unit design
+* FPGA and ASIC implementations
+* Finite State Machine (FSM) based controllers
+
+---
+
+# Simulation Result
+
+The simulation verifies that:
+
+* The FSM initializes correctly after reset.
+* State transitions occur on the rising edge of the clock.
+* The output `y` changes according to the Mealy FSM logic (current state and input).
+* The design correctly follows the defined state transition table.
+
+---
+
