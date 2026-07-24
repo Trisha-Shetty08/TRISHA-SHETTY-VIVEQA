@@ -1,0 +1,33 @@
+module edge_detectors (
+    input  wire clk,      // Master Clock
+    input  wire rst_n,    // Active-low asynchronous reset
+    input  wire a,        // Input signal 'a' shown on the board
+    output wire ckt1,     // Rising edge pulse output
+    output wire ckt2,     // Falling edge pulse output
+    output wire ckt3      // Dual edge pulse output
+);
+
+    // Internal register to hold the delayed version of 'a'
+    reg a_reg;
+
+    // Sequential logic: D Flip-Flop to delay the input by 1 clock cycle
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            a_reg <= 1'b0;
+        end else begin
+            a_reg <= a;   // 'a_reg' holds the value of 'a' from the previous cycle
+        end
+    end
+
+    // Combinational logic matching the instructor's formulas on the board
+    
+    // CKT1: Rising Edge Detector (Current is high AND previous was low)
+    assign ckt1 = a & (~a_reg);
+
+    // CKT2: Falling Edge Detector (Current is low AND previous was high)
+    assign ckt2 = (~a) & a_reg;
+
+    // CKT3: Both Edges Detector (Exclusive OR of current and previous state)
+    assign ckt3 = a ^ a_reg;
+
+endmodule
