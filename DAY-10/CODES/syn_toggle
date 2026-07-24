@@ -1,0 +1,43 @@
+module syn_toggle( input clk_A,
+    input rst_A,
+    input pulse_in_A,
+
+    input clk_B,
+    input rst_B,
+
+    output pulse_out_B
+);
+
+reg toggle_A;
+
+always @(posedge clk_A or posedge rst_A)
+begin
+    if (rst_A)
+        toggle_A <= 1'b0;
+    else if (pulse_in_A)
+        toggle_A <= ~toggle_A;
+end
+
+
+reg sync1_B, sync2_B, sync3_B;
+
+always @(posedge clk_B or posedge rst_B)
+begin
+    if (rst_B)
+    begin
+        sync1_B <= 1'b0;
+        sync2_B <= 1'b0;
+        sync3_B <= 1'b0;
+    end
+    else
+    begin
+        sync1_B <= toggle_A;
+        sync2_B <= sync1_B;
+        sync3_B <= sync2_B;
+    end
+end
+
+
+assign pulse_out_B = sync2_B ^ sync3_B;
+
+endmodule
