@@ -1,0 +1,150 @@
+# UART Transmitter and Receiver (Verilog HDL)
+
+## Overview
+
+This project implements a **Universal Asynchronous Receiver Transmitter (UART)** in **Verilog HDL**, consisting of separate **UART Transmitter (TX)** and **UART Receiver (RX)** modules. The design supports configurable baud rate generation, optional parity checking, and standard UART frame transmission.
+
+## Features
+
+* 8-bit serial data transmission and reception
+* Configurable baud rate using `CLKS_PER_BIT`
+* Optional parity generation and checking
+* Supports **Even** and **Odd** parity
+* Start bit and stop bit handling
+* Frame error detection
+* Parity error detection
+* Synthesizable RTL design
+* Finite State Machine (FSM) based implementation
+
+## UART Frame Format
+
+| Field      | Size     |
+| ---------- | -------- |
+| Start Bit  | 1        |
+| Data Bits  | 8        |
+| Parity Bit | Optional |
+| Stop Bit   | 1        |
+
+Frame:
+
+```text
+Idle → Start → D0 → D1 → D2 → D3 → D4 → D5 → D6 → D7 → Parity (Optional) → Stop
+```
+
+---
+
+# UART Transmitter (uart_tx)
+
+## Description
+
+The transmitter converts 8-bit parallel data into a serial data stream according to the UART protocol.
+
+### Inputs
+
+* `clk` – System clock
+* `rst` – Active-high reset
+* `tx_start` – Starts transmission
+* `tx_data[7:0]` – Data to transmit
+
+### Outputs
+
+* `tx` – Serial output
+* `tx_busy` – Transmission in progress
+* `tx_done` – One-clock pulse after transmission completes
+
+### FSM States
+
+* **S_IDLE** – Waits for transmit request
+* **S_START** – Sends start bit (logic 0)
+* **S_DATA** – Sends 8 data bits (LSB first)
+* **S_PARITY** – Sends parity bit (if enabled)
+* **S_STOP** – Sends stop bit (logic 1)
+
+### Parity Generation
+
+* Even parity:
+
+```verilog
+^tx_data
+```
+
+* Odd parity:
+
+```verilog
+~^tx_data
+```
+
+---
+
+# UART Receiver (urat_rx)
+
+## Description
+
+The receiver converts incoming serial data back into an 8-bit parallel word while checking parity and frame validity.
+
+### Inputs
+
+* `clk`
+* `rst`
+* `rx` – Serial input
+
+### Outputs
+
+* `rx_data[7:0]` – Received data
+* `rx_done` – Data received successfully
+* `parity_err` – Indicates parity mismatch
+* `frame_err` – Indicates invalid stop bit
+
+### FSM States
+
+* **S_IDLE** – Waits for start bit
+* **S_START** – Confirms valid start bit
+* **S_DATA** – Receives 8 data bits
+* **S_PARITY** – Checks parity bit
+* **S_STOP** – Verifies stop bit and outputs received data
+
+---
+
+## Parameters
+
+| Parameter      | Description               | Default |
+| -------------- | ------------------------- | ------- |
+| `CLKS_PER_BIT` | Clock cycles per UART bit | 2500    |
+| `PARITY_EN`    | Enable parity             | 1       |
+| `PARITY_TYPE`  | 0 = Even, 1 = Odd         | 0       |
+
+---
+
+## Error Detection
+
+### Parity Error
+
+Raised when the received parity bit does not match the calculated parity.
+
+### Frame Error
+
+Raised when the stop bit is not logic '1'.
+
+---
+
+## Design Highlights
+
+* FSM-based UART implementation
+* Two-stage synchronizer for asynchronous RX input
+* Configurable baud rate
+* Optional parity support
+* Synthesizable Verilog RTL
+* Suitable for FPGA implementation and simulation
+
+---
+
+## Applications
+
+* FPGA-to-PC communication
+* Microcontroller serial interface
+* Embedded systems
+* Sensor data communication
+* Debug console
+* Serial communication testing
+
+---
