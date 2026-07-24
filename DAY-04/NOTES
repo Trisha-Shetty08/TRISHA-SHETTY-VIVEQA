@@ -1,0 +1,216 @@
+# Multi Flip-Flop Selector using Verilog HDL
+
+## Overview
+
+This project implements a **Multi Flip-Flop Selector** using Verilog HDL. The design includes **D Flip-Flop, T Flip-Flop, and JK Flip-Flop** built using a common D Flip-Flop architecture. A **2-bit mode select (`m`)** acts as a multiplexer to choose which flip-flop output is displayed.
+
+---
+
+## Objective
+
+* Design D, T, and JK Flip-Flops.
+* Implement T and JK Flip-Flops using a D Flip-Flop.
+* Select the required flip-flop using a 2-bit multiplexer.
+* Verify the design using a Verilog testbench.
+
+---
+
+# Module Description
+
+## Top Module: `flip_flops`
+
+The top module instantiates three flip-flops and selects one of their outputs using the mode input `m`.
+
+### Inputs
+
+* `clk` – Clock signal
+* `reset` – Active-high asynchronous reset
+* `a` – Input signal
+* `b` – Second input (used for JK Flip-Flop)
+* `m[1:0]` – Mode selection
+
+### Outputs
+
+* `q` – Selected flip-flop output
+* `qb` – Complement of the selected output
+
+---
+
+# Internal Flip-Flops
+
+## 1. D Flip-Flop
+
+Stores the input `a` on every positive edge of the clock.
+
+**Equation**
+
+```text
+Q(next) = D
+```
+
+---
+
+## 2. T Flip-Flop
+
+The T Flip-Flop is implemented using a D Flip-Flop.
+
+Input equation:
+
+```text
+D = A ⊕ Q
+```
+
+where:
+
+* `A` acts as the Toggle input.
+* `Q` is the current output.
+
+### Truth Table
+
+| A | Operation |
+| - | --------- |
+| 0 | Hold      |
+| 1 | Toggle    |
+
+---
+
+## 3. JK Flip-Flop
+
+The JK Flip-Flop is implemented using a D Flip-Flop.
+
+Input equation:
+
+```text
+D = (J × Q̅) + (Q × K̅)
+```
+
+In this project:
+
+* `a` → J input
+* `b` → K input
+
+### JK Truth Table
+
+| J | K | Operation |
+| - | - | --------- |
+| 0 | 0 | Hold      |
+| 0 | 1 | Reset     |
+| 1 | 0 | Set       |
+| 1 | 1 | Toggle    |
+
+---
+
+# Mode Selection
+
+The output is selected using a **2-bit multiplexer**.
+
+| Mode (`m`) | Selected Flip-Flop                 |
+| ---------- | ---------------------------------- |
+| `00`       | D Flip-Flop                        |
+| `01`       | T Flip-Flop                        |
+| `10`       | JK Flip-Flop                       |
+| `11`       | Default Output (`q = 0`, `qb = 1`) |
+
+---
+
+# D Flip-Flop Module (`dff`)
+
+The `dff` module is the basic storage element used to implement all three flip-flops.
+
+### Inputs
+
+* `clk`
+* `reset`
+* `d`
+
+### Outputs
+
+* `q`
+* `qb`
+
+### Working
+
+* On the positive edge of the clock, the value of `d` is stored in `q`.
+* When `reset` is HIGH, `q` is immediately cleared to `0`.
+* `qb` is always the complement of `q`.
+
+---
+
+# Testbench Description
+
+## `tb_flip_flops`
+
+The testbench verifies the operation of all three flip-flops by changing the mode input and applying different values to `a` and `b`.
+
+### Clock Generation
+
+* Clock period = **10 ns**
+* Rising edge every **5 ns**
+
+---
+
+## Test Sequence
+
+### D Flip-Flop (`m = 00`)
+
+* Apply different values to `a`.
+* Verify that `q` follows `a` on every positive clock edge.
+
+### T Flip-Flop (`m = 01`)
+
+* Apply toggle input through `a`.
+* Verify hold and toggle operations.
+
+### JK Flip-Flop (`m = 10`)
+
+* Test all combinations of `a` (J) and `b` (K):
+
+  * Hold
+  * Reset
+  * Set
+  * Toggle
+
+### Invalid Mode (`m = 11`)
+
+* Verify that:
+
+  * `q = 0`
+  * `qb = 1`
+
+---
+
+# Features
+
+* Three flip-flops in a single design
+* Common D Flip-Flop implementation
+* Positive edge-triggered operation
+* Active-high asynchronous reset
+* 2-bit mode selection using a multiplexer
+* Complement output (`qb`)
+* Fully synthesizable Verilog HDL
+* Compatible with Vivado, ModelSim, and other simulators
+
+---
+
+# Applications
+
+* Sequential logic circuits
+* Digital system design
+* FPGA and ASIC implementation
+* Educational demonstration of flip-flops
+* Registers and counters
+* Finite State Machines (FSMs)
+
+---
+
+# Simulation Result
+
+The simulation confirms that:
+
+* **Mode `00`** correctly selects the D Flip-Flop.
+* **Mode `01`** correctly selects the T Flip-Flop.
+* **Mode `10`** correctly selects the JK Flip-Flop.
+* **Mode `11`** produces the default output (`q = 0`, `qb = 1`).
+* The selected output changes only on the **positive edge of the clock**, while reset immediately clears the outputs.
+
+---
