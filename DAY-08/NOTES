@@ -1,0 +1,171 @@
+# Edge Detectors using Verilog HDL
+
+## Overview
+
+This project implements **three types of edge detectors** using Verilog HDL:
+
+* **Rising Edge Detector**
+* **Falling Edge Detector**
+* **Dual (Both) Edge Detector**
+
+The design uses a **D Flip-Flop** to store the previous value of the input signal and compares it with the current input to detect signal transitions.
+
+---
+
+# Objective
+
+* Detect the **rising edge** of an input signal.
+* Detect the **falling edge** of an input signal.
+* Detect **both rising and falling edges**.
+* Verify the design using a Verilog testbench.
+
+---
+
+# Module Description
+
+## `edge_detectors`
+
+The module monitors the input signal `a` and generates one-clock-cycle pulses whenever a rising edge, falling edge, or either edge is detected.
+
+### Inputs
+
+* `clk` – System clock
+* `rst_n` – Active-low asynchronous reset
+* `a` – Input signal
+
+### Outputs
+
+* `ckt1` – Rising edge detector output
+* `ckt2` – Falling edge detector output
+* `ckt3` – Dual edge detector output
+
+---
+
+# Working Principle
+
+A register (`a_reg`) stores the previous value of the input signal.
+
+At every positive edge of the clock:
+
+* If `rst_n = 0`, the register is cleared.
+* Otherwise, the current input `a` is stored in `a_reg`.
+
+The current input is then compared with the previous value (`a_reg`) to determine whether an edge has occurred.
+
+---
+
+# Edge Detection Logic
+
+### Rising Edge Detector
+
+A rising edge occurs when the current input is HIGH and the previous input was LOW.
+
+```text id="v8hm2t"
+ckt1 = a & (~a_reg)
+```
+
+---
+
+### Falling Edge Detector
+
+A falling edge occurs when the current input is LOW and the previous input was HIGH.
+
+```text id="cw0ngj"
+ckt2 = (~a) & a_reg
+```
+
+---
+
+### Dual Edge Detector
+
+A pulse is generated whenever the current and previous values are different.
+
+```text id="tkx2kb"
+ckt3 = a ^ a_reg
+```
+
+---
+
+# Truth Table
+
+| Previous (`a_reg`) | Current (`a`) | Rising (`ckt1`) | Falling (`ckt2`) | Both (`ckt3`) |
+| ------------------ | ------------- | --------------- | ---------------- | ------------- |
+| 0                  | 0             | 0               | 0                | 0             |
+| 0                  | 1             | 1               | 0                | 1             |
+| 1                  | 0             | 0               | 1                | 1             |
+| 1                  | 1             | 0               | 0                | 0             |
+
+---
+
+# Testbench Description
+
+## `tb_edge_detectors`
+
+The testbench verifies all three edge detectors by generating a clock, applying reset, and changing the input signal.
+
+### Clock Generation
+
+* Clock period = **20 ns**
+* Rising edge every **10 ns**
+
+### Test Sequence
+
+1. Apply active-low reset (`rst_n = 0`).
+2. Release reset (`rst_n = 1`).
+3. Change input from **0 → 1** to verify:
+
+   * Rising Edge Detector (`ckt1`)
+   * Dual Edge Detector (`ckt3`)
+4. Change input from **1 → 0** to verify:
+
+   * Falling Edge Detector (`ckt2`)
+   * Dual Edge Detector (`ckt3`)
+5. End the simulation using `$finish`.
+
+---
+
+# Expected Output
+
+| Input Transition | ckt1 | ckt2 | ckt3 |
+| ---------------- | ---- | ---- | ---- |
+| 0 → 1            | 1    | 0    | 1    |
+| 1 → 0            | 0    | 1    | 1    |
+| No Change        | 0    | 0    | 0    |
+
+Each detector output remains HIGH for **one clock cycle** whenever the corresponding edge is detected.
+
+---
+
+# Features
+
+* Rising edge detection
+* Falling edge detection
+* Dual edge detection
+* Active-low asynchronous reset
+* One-clock-cycle pulse generation
+* Fully synthesizable Verilog HDL
+* Compatible with Vivado, ModelSim, and other Verilog simulators
+
+---
+
+# Applications
+
+* Interrupt generation
+* Pulse detection
+* Event monitoring
+* Digital communication systems
+* Finite State Machines (FSMs)
+* FPGA and ASIC designs
+* Digital signal processing
+
+---
+
+# Simulation Result
+
+The simulation verifies that:
+
+* `ckt1` generates a pulse only during a **rising edge**.
+* `ckt2` generates a pulse only during a **falling edge**.
+* `ckt3` generates a pulse during **both rising and falling edges**.
+* No output pulse is generated when the input signal remains unchanged.
+* The design correctly detects signal transitions using the previous input value stored in a D Flip-Flop.
