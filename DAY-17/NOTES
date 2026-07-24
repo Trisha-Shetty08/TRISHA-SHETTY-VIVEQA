@@ -1,0 +1,122 @@
+# Vending Machine Controller (Verilog HDL)
+
+## Overview
+
+This project implements a **Finite State Machine (FSM)-based Vending Machine Controller** using **Verilog HDL**. The machine accepts two coin denominations and dispenses a product when the required amount is reached. If extra money is inserted, it also returns change.
+
+## Features
+
+* FSM-based design
+* Accepts two coin values
+* Product dispensing
+* Change return functionality
+* Synchronous reset
+* Simple Moore machine implementation
+* Synthesizable Verilog HDL
+* Includes complete testbench for simulation
+
+---
+
+## Coin Encoding
+
+| Coin Input | Value    |
+| ---------- | -------- |
+| `2'b00`    | No coin  |
+| `2'b01`    | ₹5 coin  |
+| `2'b10`    | ₹10 coin |
+
+---
+
+## Outputs
+
+| Signal | Description      |
+| ------ | ---------------- |
+| `D`    | Dispense product |
+| `C`    | Return change    |
+
+---
+
+## State Diagram
+
+| State | Amount Collected                       |
+| ----- | -------------------------------------- |
+| `S0`  | ₹0 (Idle)                              |
+| `S1`  | ₹5                                     |
+| `S2`  | ₹10                                    |
+| `S3`  | ₹15 → Dispense Product                 |
+| `S4`  | ₹20 → Dispense Product + Return Change |
+
+---
+
+## State Transitions
+
+### State S0 (₹0)
+
+* ₹5 → S1
+* ₹10 → S2
+* No coin → S0
+
+### State S1 (₹5)
+
+* ₹5 → S2
+* ₹10 → S3 (Dispense)
+* No coin → S1
+
+### State S2 (₹10)
+
+* ₹5 → S3 (Dispense)
+* ₹10 → S4 (Dispense + Change)
+* No coin → S2
+
+### State S3 (₹15)
+
+* Product is dispensed (`D = 1`)
+* Returns to Idle (`S0`)
+
+### State S4 (₹20)
+
+* Product is dispensed (`D = 1`)
+* Change is returned (`C = 1`)
+* Returns to Idle (`S0`)
+
+---
+
+## FSM Type
+
+This design is a **Moore Finite State Machine**, where the outputs depend only on the current state.
+
+---
+
+## Project Files
+
+* `Vending_Machine.v` – Main vending machine controller
+* `Vending_Machine_tb.v` – Testbench for simulation
+
+---
+
+## Simulation
+
+The provided testbench verifies:
+
+* Reset operation
+* ₹5 coin insertion
+* ₹10 coin insertion
+* Product dispensing
+* Change return
+* Multiple coin combinations
+
+Simulation output is displayed using the `$monitor` system task.
+
+---
+
+## Applications
+
+* FPGA-based vending machines
+* Digital logic laboratory experiments
+* FSM learning and implementation
+* Embedded control systems
+* Verilog HDL practice projects
+
+---
+
+
