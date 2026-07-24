@@ -1,0 +1,164 @@
+# Sequence Detector using Verilog HDL
+
+## Overview
+
+This project implements a **Sequence Detector** using Verilog HDL. The design uses **D Flip-Flops** and combinational logic to detect a specific input bit sequence. Whenever the desired sequence is detected, the output `op` becomes HIGH for one clock cycle.
+
+---
+
+# Objective
+
+* Design a sequence detector using D Flip-Flops.
+* Detect a predefined binary sequence from a serial input.
+* Generate an output pulse when the sequence is detected.
+* Verify the design using a Verilog testbench.
+
+---
+
+# Module Description
+
+## `seq_det`
+
+The `seq_det` module receives a serial input (`ip`) and uses two D Flip-Flops to store previous input states. Combinational logic is used to determine when the required sequence has occurred.
+
+### Inputs
+
+* `clk` – Clock signal
+* `rst` – Reset signal
+* `ip` – Serial input bit
+
+### Output
+
+* `op` – Sequence detected output
+
+---
+
+# Working Principle
+
+The circuit consists of two D Flip-Flops connected with combinational logic.
+
+### First D Flip-Flop
+
+The first flip-flop stores the complement of the input.
+
+```text
+D0 = ~ip
+```
+
+Its output is represented by `q0`.
+
+---
+
+### Second D Flip-Flop
+
+The second flip-flop stores:
+
+```text
+D1 = ip & q0
+```
+
+Its output is represented by `q1`.
+
+---
+
+### Output Logic
+
+The sequence detection output is generated as:
+
+```text
+op = ip & q1
+```
+
+The output becomes HIGH only when the required sequence is detected according to the stored input history.
+
+---
+
+# Block Diagram
+
+```text
+          ip
+           │
+           ▼
+        NOT Gate
+           │
+           ▼
+        D Flip-Flop (q0)
+           │
+           ▼
+      AND with ip
+           │
+           ▼
+        D Flip-Flop (q1)
+           │
+           ▼
+      AND with ip
+           │
+           ▼
+          op
+```
+
+---
+
+# Testbench Description
+
+## `seq_det_tb`
+
+The testbench verifies the sequence detector by:
+
+* Generating a clock signal with a **10 ns period**
+* Applying reset
+* Sending a long serial input stream (`ip`)
+* Observing the output whenever the required sequence is detected
+
+### Clock Generation
+
+* Clock period = **10 ns**
+* Rising edge every **5 ns**
+
+---
+
+# Test Sequence
+
+The testbench performs the following operations:
+
+1. Initialize clock, reset, and input.
+2. Apply reset.
+3. Release reset.
+4. Apply a sequence of serial input bits (`0` and `1`).
+5. Observe the output `op`.
+6. End the simulation using `$finish`.
+
+---
+
+# Features
+
+* Sequence detection using D Flip-Flops
+* Serial input processing
+* Synchronous operation
+* Simple combinational logic
+* Fully synthesizable Verilog HDL
+* Compatible with Vivado, ModelSim, and other Verilog simulators
+
+---
+
+# Applications
+
+* Digital communication systems
+* Serial data receivers
+* Pattern recognition circuits
+* Finite State Machines (FSMs)
+* Embedded systems
+* FPGA and ASIC implementations
+
+---
+
+# Simulation Result
+
+The simulation verifies that:
+
+* The serial input sequence is correctly sampled on each clock edge.
+* The D Flip-Flops store previous input values required for sequence detection.
+* The output `op` generates a pulse whenever the predefined sequence is detected.
+* The design operates correctly according to the implemented logic.
+
+---
