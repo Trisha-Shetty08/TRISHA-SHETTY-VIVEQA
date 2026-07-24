@@ -1,0 +1,81 @@
+module tb_flip_flops;
+
+
+reg clk;
+reg rst;
+reg a;
+reg b;
+reg [1:0] m;
+
+wire q;
+wire ab;
+
+flip_flops uut (
+    .clk(clk),
+    .rst(rst),
+    .a(a),
+    .b(b),
+    .m(m),
+    .q(q),
+    .ab(ab)
+);
+always #5 clk = ~clk;
+
+initial
+begin
+    clk = 0;
+    rst = 1;
+    a = 0;
+    b = 0;
+    m = 2'b00;
+
+    #10;
+    rst = 0;
+    m = 2'b00;
+    a = 1; b = 0;
+    #10;
+
+    a = 0;
+    #10;
+
+    a = 1;
+    #10;
+    m = 2'b01;
+
+    a = 1;    
+    #10;
+
+    a = 1;    
+    #10;
+
+    a = 0;   
+    #10;
+
+    m = 2'b10;
+
+    a = 1;
+    b = 0;
+    #10;
+    a = 0;
+    b = 1;
+    #10;
+
+    a = 1;
+    b = 1;
+    #10;
+    a = 0;
+    b = 0;
+    #10;
+    m = 2'b11;
+    #20;
+
+    $finish;
+end
+
+initial
+begin
+    $monitor("Time=%0t | rst=%b | mode=%b | a=%b | b=%b | q=%b | ab=%b",
+              $time, rst, m, a, b, q, ab);
+end
+
+endmodule
