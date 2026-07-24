@@ -1,0 +1,50 @@
+`timescale 1ns/1ps
+
+module tb_jk_ff;
+
+reg clk;
+reg rst;
+reg j;
+reg k;
+wire q;
+wire qb;
+
+jk_ff dut (.clk(clk),.rst(rst),.j(j),.k(k),.q(q),.qb(qb));
+initial begin
+    clk = 0;
+    forever #5 clk = ~clk;
+end
+
+initial begin
+ rst = 1;j = 0;k = 0;
+ #10;
+ rst = 0;j = 0;k = 0;
+#10;
+j = 0;k = 1;
+#10;
+j = 1;k = 0;
+#10;
+
+j = 1;k = 1;
+#10;
+j = 0; k = 0;
+ #10;
+
+ j = 0;k = 1;
+ #10;
+
+    j = 1;
+    k = 0;
+    #10;
+
+    j = 1;
+    k = 1;
+    #20;
+$finish;
+end
+
+initial begin
+    $monitor("Time=%0t rst=%b j=%b k=%b q=%b qb=%b",
+              $time, rst, j, k, q, qb);
+end
+endmodule
