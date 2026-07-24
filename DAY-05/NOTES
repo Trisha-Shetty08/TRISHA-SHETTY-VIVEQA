@@ -1,0 +1,143 @@
+# Full Adder using Verilog HDL
+
+## Overview
+
+This project implements a **1-bit Full Adder** using **two Half Adders** and an **OR gate**. A testbench is included to verify the functionality by testing all possible input combinations.
+
+---
+
+# Objective
+
+* Design a 1-bit Full Adder using two Half Adders.
+* Generate the **Sum** and **Carry** outputs.
+* Verify the design through simulation.
+
+---
+
+# Module Description
+
+## `full_adder`
+
+The Full Adder adds three 1-bit binary inputs:
+
+* `a`
+* `b`
+* `cin` (Carry Input)
+
+and produces:
+
+* `sum`
+* `carry`
+
+The design is constructed using:
+
+* Two Half Adders
+* One OR gate
+
+---
+
+# Inputs
+
+* `a` – First input bit
+* `b` – Second input bit
+* `cin` – Carry input
+
+# Outputs
+
+* `sum` – Sum output
+* `carry` – Carry output
+
+---
+
+# Working
+
+### First Half Adder
+
+Adds inputs `a` and `b`.
+
+Outputs:
+
+* Intermediate Sum (`sum1`)
+* Intermediate Carry (`carry1`)
+
+### Second Half Adder
+
+Adds:
+
+* `sum1`
+* `cin`
+
+Outputs:
+
+* Final Sum (`sum`)
+* Intermediate Carry (`carry2`)
+
+### Carry Generation
+
+The final carry is obtained by OR-ing the two intermediate carry outputs.
+
+```text
+Carry = Carry1 OR Carry2
+```
+
+---
+
+# Truth Table
+
+| A | B | Cin | Sum | Carry |
+| - | - | --- | --- | ----- |
+| 0 | 0 | 0   | 0   | 0     |
+| 0 | 0 | 1   | 1   | 0     |
+| 0 | 1 | 0   | 1   | 0     |
+| 0 | 1 | 1   | 0   | 1     |
+| 1 | 0 | 0   | 1   | 0     |
+| 1 | 0 | 1   | 0   | 1     |
+| 1 | 1 | 0   | 0   | 1     |
+| 1 | 1 | 1   | 1   | 1     |
+
+---
+
+# Testbench Description
+
+## `tb_full_adder`
+
+The testbench verifies the Full Adder by applying all **8 possible input combinations** of `a`, `b`, and `cin`.
+
+### Test Method
+
+* Uses a **for loop** to generate all possible input combinations.
+* The statement `{a, b, cin} = i;` assigns binary values from `000` to `111`.
+* Each input combination is applied for **10 ns**.
+* The simulation ends using `$finish`.
+
+---
+
+# Features
+
+* Hierarchical design using Half Adders
+* Generates correct Sum and Carry outputs
+* Compact and modular Verilog implementation
+* Fully synthesizable
+* Easy to simulate in Vivado, ModelSim, and other Verilog simulators
+
+---
+
+# Applications
+
+* Binary addition
+* Arithmetic Logic Units (ALUs)
+* Ripple Carry Adders
+* Digital processors
+* FPGA and ASIC designs
+* Arithmetic circuits
+
+---
+
+# Simulation Result
+
+The simulation verifies that:
+
+* All **8 input combinations** are tested successfully.
+* The **Sum** output represents the binary addition result.
+* The **Carry** output is generated correctly for each input combination.
+* The design matches the standard **Full Adder truth table**.
