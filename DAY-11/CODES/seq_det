@@ -1,0 +1,18 @@
+module seq_det(clk,rst,ip,op);
+input clk,rst;
+input ip;
+output op;
+
+wire d1;
+wire q0,q1;
+
+D_FF dff0(clk,rst,~ip,q0);
+
+assign d1=ip&q0;
+
+D_FF dff1(clk,rst,d1,q1);
+
+assign op=ip&q1;
+
+endmodule
+
