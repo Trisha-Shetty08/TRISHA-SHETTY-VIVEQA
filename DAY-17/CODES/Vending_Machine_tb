@@ -1,0 +1,37 @@
+module Vending_Machine_tb;
+reg clk;
+reg rst;
+reg [1:0] coin;
+wire D;
+wire C;
+Vending_Machine uut(.clk(clk),.rst(rst),.coin(coin),.D(D), .C(C));
+always #5 clk = ~clk;
+initial
+begin
+    clk = 0;
+    rst = 1;
+    coin = 2'b00;
+    #10;
+    rst = 0;
+    #10 coin = 2'b01;   
+    #10 coin = 2'b10;   
+    #10 coin = 2'b00;
+    #20 coin = 2'b10;   
+    #10 coin = 2'b01;   
+    #10 coin = 2'b00;
+    #20 coin = 2'b10;   
+    #10 coin = 2'b10;   
+    #10 coin = 2'b00;
+    #20 coin = 2'b01;
+    #10 coin = 2'b01;
+    #10 coin = 2'b01;
+    #10 coin = 2'b00;
+    #30;
+    $finish;
+end
+initial
+begin
+    $monitor("Time=%0t | rst=%b | coin=%b | D=%b | C=%b",$time, rst, coin, D, C);
+end
+endmodule
+
