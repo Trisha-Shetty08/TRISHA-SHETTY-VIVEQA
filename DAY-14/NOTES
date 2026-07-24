@@ -1,0 +1,218 @@
+# Synchronous FIFO (First-In First-Out) using Verilog HDL
+
+## Overview
+
+This project implements a **Synchronous FIFO (First-In First-Out)** memory using Verilog HDL. The FIFO stores **8-bit data** and has a depth of **16 locations**. It supports synchronous read and write operations using a single clock and provides **FULL** and **EMPTY** status flags.
+
+A testbench is included to verify the FIFO by writing data into the memory, reading it back in the same order, and checking the status flags.
+
+---
+
+# Objective
+
+* Design a synchronous FIFO memory.
+* Store and retrieve data in FIFO order.
+* Generate **FULL** and **EMPTY** status flags.
+* Verify FIFO functionality using a Verilog testbench.
+
+---
+
+# Module Description
+
+## `fifo`
+
+The FIFO stores incoming data sequentially and retrieves it in the same order in which it was written.
+
+### Inputs
+
+* `clk` – System clock
+* `rst` – Active-high reset
+* `wr_en` – Write enable
+* `rd_en` – Read enable
+* `write_data[7:0]` – Data to be written into the FIFO
+
+### Outputs
+
+* `read_data[7:0]` – Data read from the FIFO
+* `full` – Indicates the FIFO is full
+* `empty` – Indicates the FIFO is empty
+
+---
+
+# Memory Organization
+
+```text
+Memory Depth : 16 Locations
+Data Width   : 8 Bits
+Write Pointer: 5 Bits
+Read Pointer : 5 Bits
+```
+
+The FIFO memory is declared as:
+
+```text
+reg [7:0] mem [0:15];
+```
+
+---
+
+# Working Principle
+
+The FIFO uses two pointers:
+
+* **Write Pointer (`wr_ptr`)** – Points to the next memory location for writing.
+* **Read Pointer (`rd_ptr`)** – Points to the next memory location for reading.
+
+The extra Most Significant Bit (MSB) in each pointer is used to distinguish between **FULL** and **EMPTY** conditions.
+
+---
+
+# Write Operation
+
+When:
+
+* `wr_en = 1`
+* `full = 0`
+
+the incoming data is written into the FIFO.
+
+```text
+mem[wr_ptr] ← write_data
+```
+
+After writing, the write pointer increments to the next location.
+
+---
+
+# Read Operation
+
+When:
+
+* `rd_en = 1`
+* `empty = 0`
+
+the oldest stored data is read from the FIFO.
+
+```text
+read_data ← mem[rd_ptr]
+```
+
+After reading, the read pointer increments to the next location.
+
+---
+
+# Status Flags
+
+## Empty Flag
+
+The FIFO is empty when both pointers are equal.
+
+```text
+empty = (wr_ptr == rd_ptr)
+```
+
+---
+
+## Full Flag
+
+The FIFO is full when:
+
+* The lower four bits of both pointers are equal.
+* The MSBs are different.
+
+```text
+full = (wr_ptr[4] ≠ rd_ptr[4]) &&
+       (wr_ptr[3:0] == rd_ptr[3:0])
+```
+
+This technique prevents ambiguity between the FULL and EMPTY states.
+
+---
+
+# Testbench Description
+
+## `fifo_tb`
+
+The testbench verifies FIFO operation through a sequence of write and read operations.
+
+### Clock Generation
+
+* Clock period = **10 ns**
+* Rising edge every **5 ns**
+
+---
+
+## Test Sequence
+
+### 1. Reset
+
+* Apply reset.
+* Initialize pointers and output data.
+
+### 2. Write Operation
+
+* Enable `wr_en`.
+* Write **16 values (1–16)** into the FIFO.
+* Verify that the **FULL** flag becomes HIGH after the FIFO is completely filled.
+
+### 3. Read Operation
+
+* Disable writing.
+* Enable `rd_en`.
+* Read all stored values sequentially.
+* Verify that data is read in the same order as written (FIFO principle).
+
+### 4. Empty Check
+
+* After reading all entries, verify that the **EMPTY** flag becomes HIGH.
+
+---
+
+# Expected Operation
+
+| Operation  | FIFO Status              |
+| ---------- | ------------------------ |
+| Reset      | Empty                    |
+| Write Data | Write Pointer Increments |
+| Read Data  | Read Pointer Increments  |
+| 16 Writes  | FULL = 1                 |
+| 16 Reads   | EMPTY = 1                |
+
+---
+
+# Features
+
+* Synchronous FIFO design
+* 16 memory locations
+* 8-bit data width
+* Separate read and write pointers
+* FULL and EMPTY status flags
+* Pointer wrap-around using an extra MSB
+* Fully synthesizable Verilog HDL
+* Compatible with Vivado, ModelSim, and other Verilog simulators
+
+---
+
+# Applications
+
+* Data buffering
+* UART communication
+* Processor-to-peripheral interfaces
+* Digital communication systems
+* Streaming data applications
+* FPGA and ASIC designs
+* Embedded systems
+
+---
+
+# Simulation Result
+
+The simulation verifies that:
+
+* Data is successfully written into the FIFO when `wr_en` is asserted.
+* Data is read back in the exact order it was written, confirming FIFO behavior.
+* The **FULL** flag is asserted after all 16 locations are occupied.
+* The **EMPTY** flag is asserted after all stored data has been read.
+* The write and read pointers update correctly during FIFO operations.
+
+---
