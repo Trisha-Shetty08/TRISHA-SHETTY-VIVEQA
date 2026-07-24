@@ -1,0 +1,114 @@
+# Half Adder using Verilog HDL
+
+## Overview
+
+This project implements a **1-bit Half Adder** using Verilog HDL. A Half Adder performs the addition of two single-bit binary inputs and produces a **Sum** and a **Carry** output. A testbench is included to verify the design by applying all possible input combinations.
+
+---
+
+# Objective
+
+* Design a 1-bit Half Adder using Verilog HDL.
+* Generate the **Sum** and **Carry** outputs.
+* Verify the design through simulation.
+
+---
+
+# Module Description
+
+## `Half_adder`
+
+The Half Adder performs the addition of two 1-bit binary inputs.
+
+### Inputs
+
+* `a` – First input bit
+* `b` – Second input bit
+
+### Outputs
+
+* `sum` – Sum output
+* `carry` – Carry output
+
+---
+
+# Working
+
+The Half Adder uses basic logic gates to perform binary addition.
+
+### Sum
+
+The sum is generated using the XOR gate.
+
+```text id="7bglb0"
+Sum = A XOR B
+```
+
+### Carry
+
+The carry is generated using the AND gate.
+
+```text id="v8mn9n"
+Carry = A AND B
+```
+
+---
+
+# Truth Table
+
+| A | B | Sum | Carry |
+| - | - | --- | ----- |
+| 0 | 0 | 0   | 0     |
+| 0 | 1 | 1   | 0     |
+| 1 | 0 | 1   | 0     |
+| 1 | 1 | 0   | 1     |
+
+---
+
+# Testbench Description
+
+## `tb_half_adder`
+
+The testbench verifies the Half Adder by applying all **four possible input combinations**.
+
+### Test Cases
+
+| Time (ns) | A | B | Expected Sum | Expected Carry |
+| --------- | - | - | ------------ | -------------- |
+| 0         | 0 | 0 | 0            | 0              |
+| 5         | 0 | 1 | 1            | 0              |
+| 10        | 1 | 0 | 1            | 0              |
+| 15        | 1 | 1 | 0            | 1              |
+
+Each input combination is applied for **5 ns**, after which the next test case is executed. The simulation ends with the `$finish` system task.
+
+---
+
+# Features
+
+* Simple combinational logic circuit
+* Uses XOR and AND gates
+* Fully synthesizable Verilog HDL
+* Tests all possible input combinations
+* Compatible with Vivado, ModelSim, and other Verilog simulators
+
+---
+
+# Applications
+
+* Binary addition
+* Arithmetic Logic Units (ALUs)
+* Full Adder design
+* Digital arithmetic circuits
+* FPGA and ASIC implementations
+* Educational digital logic experiments
+
+---
+
+# Simulation Result
+
+The simulation confirms that:
+
+* The **Sum** output is the XOR of inputs `a` and `b`.
+* The **Carry** output is the AND of inputs `a` and `b`.
+* All four input combinations produce outputs matching the standard Half Adder truth table.
