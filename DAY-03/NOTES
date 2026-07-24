@@ -1,0 +1,147 @@
+# JK Flip-Flop (JK FF) using Verilog HDL
+
+## Overview
+
+This project implements a **positive edge-triggered JK Flip-Flop** with an **active-high reset** using Verilog HDL. A testbench is included to verify the behavior of the flip-flop for all possible input combinations.
+
+## Objective
+
+* Design a positive edge-triggered JK Flip-Flop.
+* Implement an active-high reset.
+* Verify the flip-flop using a Verilog testbench.
+* Observe the output for different combinations of **J** and **K** inputs.
+
+---
+
+## Module Description
+
+### `jk_ff`
+
+The `jk_ff` module changes its output based on the values of **J** and **K** at every positive edge of the clock.
+
+### Inputs
+
+* `clk` – Clock signal
+* `rst` – Active-high reset
+* `j` – J input
+* `k` – K input
+
+### Outputs
+
+* `q` – Main output
+* `qb` – Complement of the output (`~q`)
+
+---
+
+## Working
+
+The flip-flop operates on the **positive edge of the clock**.
+
+* If `rst = 1`, the output is reset to `0`.
+* Otherwise, the output changes according to the JK truth table.
+
+### JK Logic
+
+| J | K | Operation | Next Q |
+| - | - | --------- | ------ |
+| 0 | 0 | Hold      | Q      |
+| 0 | 1 | Reset     | 0      |
+| 1 | 0 | Set       | 1      |
+| 1 | 1 | Toggle    | ~Q     |
+
+The complement output is generated using:
+
+```verilog
+assign qb = ~q;
+```
+
+---
+
+## Testbench Description
+
+### `tb_jk_ff`
+
+The testbench generates a clock signal and applies different combinations of **J** and **K** inputs to verify the flip-flop operation.
+
+### Clock Generation
+
+* Clock period = **10 ns**
+* Rising edge every **5 ns**
+
+```verilog
+forever #5 clk = ~clk;
+```
+
+---
+
+## Test Cases
+
+| Time (ns) | Reset | J | K | Expected Operation |
+| --------- | ----- | - | - | ------------------ |
+| 0         | 1     | 0 | 0 | Reset (Q = 0)      |
+| 10        | 0     | 0 | 0 | Hold               |
+| 20        | 0     | 0 | 1 | Reset              |
+| 30        | 0     | 1 | 0 | Set                |
+| 40        | 0     | 1 | 1 | Toggle             |
+| 50        | 0     | 0 | 0 | Hold               |
+| 60        | 0     | 0 | 1 | Reset              |
+| 70        | 0     | 1 | 0 | Set                |
+| 80        | 0     | 1 | 1 | Toggle             |
+
+---
+
+## Simulation Monitoring
+
+The simulation uses the `$monitor` statement to display signal values throughout execution.
+
+```verilog
+$monitor("Time=%0t rst=%b j=%b k=%b q=%b qb=%b",
+         $time, rst, j, k, q, qb);
+```
+
+This helps verify the output at each clock edge.
+
+---
+
+## Expected Behavior
+
+| Reset | J | K | Q (Next State)      |
+| ----- | - | - | ------------------- |
+| 1     | X | X | 0                   |
+| 0     | 0 | 0 | Hold Previous Value |
+| 0     | 0 | 1 | 0                   |
+| 0     | 1 | 0 | 1                   |
+| 0     | 1 | 1 | Toggle              |
+
+---
+
+## Features
+
+* Positive edge-triggered operation
+* Active-high reset
+* Toggle functionality
+* Complement output (`qb`)
+* Synthesizable Verilog HDL
+* Easy to simulate in Vivado, ModelSim, or other Verilog simulators
+
+---
+
+## Applications
+
+* Counters
+* Frequency dividers
+* State machines
+* Digital control circuits
+* Sequential logic design
+* FPGA and ASIC implementations
+
+---
+
+## Simulation Result
+
+The simulation verifies that:
+
+* The output resets to `0` when `rst` is HIGH.
+* The output follows the standard JK Flip-Flop truth table.
+* The output changes only on the **positive edge of the clock**.
+* The complement output (`qb`) always remains the inverse of `q`.
