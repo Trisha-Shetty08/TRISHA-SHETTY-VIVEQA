@@ -1,0 +1,72 @@
+# AND Gate in Verilog HDL
+
+## Overview
+
+This project implements a **2-input AND gate** using Verilog HDL and verifies its functionality with a testbench.
+
+## Objective
+
+* Design a basic 2-input AND gate.
+* Simulate all possible input combinations.
+* Verify that the output matches the AND logic truth table.
+
+## Module Description
+
+### `and_gate`
+
+The `and_gate` module performs the logical AND operation on two 1-bit inputs.
+
+**Inputs**
+
+* `a` – First input
+* `b` – Second input
+
+**Output**
+
+* `y` – Output of the AND operation
+
+**Logic**
+
+```verilog
+assign y = a & b;
+```
+
+The output `y` is HIGH (`1`) only when both inputs `a` and `b` are HIGH (`1`).
+
+## Testbench Description
+
+### `tb_and_gate`
+
+The testbench verifies the AND gate by applying all four possible input combinations.
+
+### Test Cases
+
+| Time (ns) | a | b | Expected y |
+| --------- | - | - | ---------- |
+| 0         | 0 | 0 | 0          |
+| 10        | 0 | 1 | 0          |
+| 20        | 1 | 0 | 0          |
+| 30        | 1 | 1 | 1          |
+
+Each test case is applied for **10 ns**, after which the simulation proceeds to the next input combination. The simulation ends with the `$finish` system task.
+
+## Truth Table
+
+| a | b | y = a & b |
+| - | - | --------- |
+| 0 | 0 | 0         |
+| 0 | 1 | 0         |
+| 1 | 0 | 0         |
+| 1 | 1 | 1         |
+
+## Simulation Result
+
+The simulation confirms that the AND gate behaves correctly for all possible input combinations, matching the expected truth table.
+
+## Applications
+
+* Digital logic design
+* Arithmetic circuits
+* Control logic
+* Combinational logic circuits
+* FPGA and ASIC design
